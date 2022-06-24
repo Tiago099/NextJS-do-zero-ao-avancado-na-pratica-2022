@@ -1,12 +1,22 @@
+import { useState } from 'react';
+
 import Nome from './components/Nome';
 
 function App() {
+  const [aluno, setAluno] = useState("Tiago");
+  
+  function handleChangeName(){
+    setAluno('Jonas');
+    
+  }
+
   return (
     <div>
       <h1>Componente App</h1>
-      <Nome aluno="Lucas" idade={30} />
-      <br/>
-      <Nome aluno="Tiago" idade={25} />
+      <h2>Olá: {aluno} </h2>
+      <button onClick={handleChangeName}> 
+      Mudar Nome
+      </button>
     </div>
   );
 }
