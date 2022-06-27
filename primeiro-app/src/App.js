@@ -1,21 +1,19 @@
 import { useState } from 'react';
 
 function App() {
- const [nome, setNome] = useState('');
- const [email, setEmail]  = useState('');
- const [idade, setIdade] = useState('');
-
-
-const [user, setUser] = useState({});
+  const [input, setInput] = useState('');
+ const [tarefas, setTarefas] = useState([
+  "Pagar a conta de luz",
+  "Estudar React Js"
+ ]);
+ 
 
  function handleRegister(e){
 e.preventDefault();
 
-setUser({
-  nome: nome,
-  email: email,
-  idade: idade
-})
+setTarefas([...tarefas, input]);
+setInput('');
+
  }
   
     
@@ -25,33 +23,22 @@ setUser({
       
       <form onSubmit={handleRegister}>
         <label>Nome:</label><br/>
-        <input placeholder='Digite seu nome'
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-        /><br/>
-
-        <label>Email:</label><br/>
-        <input placeholder='Digite seu email'
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        /><br/>
-
-        <label>Idade:</label><br/>
-        <input placeholder='Digite seu idade'
-        value={idade}
-        onChange={(e) => setIdade(e.target.value)}
+        <input placeholder='Digite uma tarefa'
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
         /><br/>
 
         <button type='submit'>Registra</button>
       </form>
 
       <br/><br/>
+      
+      <ul>
+        {tarefas.map( tarefas => (
+          <li key={tarefas}>{tarefas}</li>
+        ))}
 
-      <div>
-        <span>Bem vindo: {user.nome}</span><br/>
-        <span>Email: {user.email}</span><br/>
-        <span>Idade: {user.idade}</span><br/>
-      </div>
+      </ul>
       
      
     </div>
