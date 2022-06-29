@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import './style.css';
 
@@ -37,7 +38,7 @@ function App() {
             <strong className="titulo">{item.titulo}</strong>
 
             <img src={item.capa} alt={item.titulo} className="capa" />
-            <p className='subtitulo'>
+            <p className="subtitulo">
               {item.subtitulo}
             </p>
             <a className="botao">Acessar</a>
@@ -49,3 +50,4 @@ function App() {
 }
 
 export default App;
+
