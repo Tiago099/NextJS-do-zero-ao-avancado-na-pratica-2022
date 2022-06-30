@@ -1,7 +1,14 @@
 import React from "react";
+import { Title } from "./styles";
 
 export default function Main(){
     return(
-        <div>Main</div>
+        <Title>
+            Main
+            <span>Olá Mundo!</span>    
+            
+        </Title>
+
+      
     )
 }
