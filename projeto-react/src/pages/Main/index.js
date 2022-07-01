@@ -25,6 +25,7 @@ export default function Main(){
   // Salvar alterações
   useEffect(()=>{
     localStorage.setItem('repos', JSON.stringify(repositorios));
+    console.log(repositorios);
   }, [repositorios]);
 
   const handleSubmit = useCallback((e)=>{
