@@ -13,6 +13,14 @@ import { format } from 'date-fns';
 
 import firebase from '../../services/firebaseConnection';
 
+type TaskList = {
+    id: string;
+    created: string | Date;
+    createdFormated?: string;
+    tarefa: string;
+    userId: string;
+    nome: string;
+}
 
 
 interface BoardProps{
@@ -20,13 +28,14 @@ interface BoardProps{
         id: string;
         nome:string;
     }
+    data: string;
 }
 
 
-export default function Board({user}: BoardProps){
+export default function Board({user, data}: BoardProps){
     const [input, setInput] = useState('');
-    const [taskList, setTaskList] = useState([]);
-
+    const [taskList, setTaskList] = useState<TaskList[]>(JSON.parse(data));
+    
 
      async function handleAddTask(e: FormEvent){
         e.preventDefault();
@@ -59,7 +68,24 @@ export default function Board({user}: BoardProps){
     .catch((err)=>{
         console.log('ERRO AO CADASTRAR: ', err)
     })
+    
 }
+async function handleDelete(id:string){
+    await firebase.firestore().collection('tarefas').doc(id)
+    .delete()
+    .then(()=>{
+        console.log('DELETADO COM SUCESSO!')
+        let taskDelete = taskList.filter(item => {
+            return (item.id !== id)
+        });
+
+        setTaskList(taskDelete);
+    })
+    .catch((err)=>{
+        console.log(err);
+    })
+
+};
     
     return(
         <>
@@ -79,11 +105,11 @@ export default function Board({user}: BoardProps){
                 <FiPlus size={25} color="#17181f" />
             </button>
         </form>
-        <h1>Você tem 2 tarefas!</h1>
+        <h1>Você tem {taskList.length} {taskList.length === 1 ? 'tarefa' : 'tarefas'}!</h1>
 
 <section>
       {taskList.map( task => (
-        <article className={styles.taskList}>
+        <article key={task.id} className={styles.taskList}>
            <Link href={`/board/${task.id}`}>
              <p>{task.tarefa}</p>
            </Link>
@@ -99,7 +125,7 @@ export default function Board({user}: BoardProps){
             </button>
             </div>
 
-            <button>
+            <button onClick={() => handleDelete(task.id)}>
                 <FiTrash size={20} color="#FF3636"/>
                 <span>Excluir</span>
             </button>
@@ -140,14 +166,25 @@ export const getServerSideProps: GetServerSideProps = async ({req}) => {
         }
     }
   }
-
+  const tasks = await firebase.firestore().collection('tarefas')
+  .where('userId', '==', session?.id)
+  .orderBy('created', 'asc').get();
+ 
+  const data = JSON.stringify(tasks.docs.map( u => {
+     return {
+        id: u.id,
+        createdFormated: format(u.data().created.toDate(), 'dd MMMM yyyy'),
+        ...u.data(),
+     }
+}))
   const user ={
     nome: session?.user.name,
     id: session?.id
   }
  return{
     props:{
-       user
+       user,
+       data
     }
  }
 } 
