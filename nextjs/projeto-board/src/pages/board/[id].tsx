@@ -4,6 +4,12 @@ import  firebase from '../../services/firebaseConnection';
 import {format} from 'date-fns';
 
 
+
+import Head from "next/head";
+import styles from "./task.module.scss";
+import { FiCalendar } from "react-icons/fi";
+
+
 type Task = {
     id: string;
     created: string | Date;
@@ -20,11 +26,26 @@ interface TaskListProps{
 
 export default function Task({data}: TaskListProps){
     const task =JSON.parse(data) as Task;
+
     return(
-        <div>
-          <h1>Pagina detalhes</h1>
-        </div>
+        <>
+        <Head>
+            <title>Detalhes da sua tarefa</title>
+        </Head>
+        <article className={styles.container}>
+            <div className={styles.actions}>
+              <div>
+                <FiCalendar size={30} color= "#FFF"/>
+                <span> Tarefa criada: </span>
+                <time>{task.createdFormated}</time>
+              </div>
+            </div>
+            <p>{task.tarefa}</p>
+        </article>
+       
+        </>    
     )
+
 }
 
 export const getServerSideProps: GetServerSideProps = async ({req, params}) => {
