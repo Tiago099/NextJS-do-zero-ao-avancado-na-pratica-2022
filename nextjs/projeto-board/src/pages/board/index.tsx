@@ -8,7 +8,8 @@ import Link from 'next/link';
 import styles from  './styles.module.scss';
 import { FiCalendar, FiClock, FiEdit2, FiPlus, FiTrash, FiX } from 'react-icons/fi';
 import { SupportButtom } from '../../components/SupportButtom';
-import { format } from 'date-fns';
+import { format, formatDistance } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 
 import firebase from '../../services/firebaseConnection';
@@ -27,6 +28,8 @@ interface BoardProps{
     user:{
         id: string;
         nome:string;
+        vip: boolean;
+        lastDonate: string | Date;
     }
     data: string;
 }
@@ -161,12 +164,13 @@ function handleCancelEdit(){
                 <FiCalendar size={20} color="#FFB800"/>
                 <time>{task.createdFormated}</time>
             </div>
-            <button onClick={ () => handleEditTask(task)}>
+           {user.vip && (
+             <button onClick={ () => handleEditTask(task)}>
                 <FiEdit2 size={20} color="#FFF"/>
                 <span>Editar</span>
-            </button>
-            </div>
-
+             </button>
+           ) }
+           </div>
             <button onClick={() => handleDelete(task.id)}>
                 <FiTrash size={20} color="#FF3636"/>
                 <span>Excluir</span>
@@ -179,15 +183,17 @@ function handleCancelEdit(){
 
 </main>
 
-    <div className={styles.vipContainer}>
-        <h3>Obrigado por apoia esse projeto.</h3>
-        <div>
-            <FiClock size={28} color="#FFF" />
-            <time>
-                Última doação foi a 3 dias.
-            </time>
-        </div>
-    </div>
+   {user.vip && (
+     <div className={styles.vipContainer}>
+     <h3>Obrigado por apoia esse projeto.</h3>
+     <div>
+         <FiClock size={28} color="#FFF" />
+         <time>
+             Última doação foi {formatDistance(new Date(user.lastDonate), new Date(), { locale: ptBR})}
+         </time>
+     </div>
+ </div>
+   )}
       
     <SupportButtom/>
      
@@ -217,11 +223,13 @@ export const getServerSideProps: GetServerSideProps = async ({req}) => {
         id: u.id,
         createdFormated: format(u.data().created.toDate(), 'dd MMMM yyyy'),
         ...u.data(),
-     }
+     } 
 }))
   const user ={
     nome: session?.user.name,
-    id: session?.id
+    id: session?.id,
+    vip: session?.vip,
+    lastDonate: session?.lastDonate
   }
  return{
     props:{
