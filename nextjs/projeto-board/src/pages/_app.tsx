@@ -7,7 +7,7 @@ import '../styles/global.scss';
 import { SessionProvider } from 'next-auth/react';
 
 const initialOptions = {
-  "client-id": "AU5cvZWhr1s-BtCd58mGq6_hMK6EofRJlX5uzf3vj8xJSbSYKS65qPXnm872pbN2Gr1qYtg311H8wB1m",
+  "client-id": "ATCo7VkroWAgGPubMSuuvrWqWWrdgSWgc_6oaUUOe8HizTjVzqZAna8j3TAxcdm0JoOGFdrIxPpwIOoQ",
   currency: "BRL",
   intent: "capture",
 }
